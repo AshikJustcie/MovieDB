@@ -11,8 +11,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
@@ -92,10 +95,51 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        loadJSON();
+        checkSortOrder();
     }
 
-    private void loadJSON() {
+    private void loadJSON1() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                return;
+            }
+            Client client = new Client();
+            Service apiService = client.getClient().create(Service.class);
+            Call<MoviesResponse> call = apiService.getUpcomingMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+
+                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+                    if (swipeContainer.isRefreshing()) {
+                        swipeContainer.setRefreshing(false);
+                    }
+                    pd.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                    Toast.makeText(MainActivity.this, "Error Fetching Data", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+        }
+        catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadJSON2() {
         try {
             if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
                 Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
@@ -105,6 +149,170 @@ public class MainActivity extends AppCompatActivity {
             Client client = new Client();
             Service apiService = client.getClient().create(Service.class);
             Call<MoviesResponse> call = apiService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+
+                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+                    if (swipeContainer.isRefreshing()) {
+                        swipeContainer.setRefreshing(false);
+                    }
+                    pd.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                    Toast.makeText(MainActivity.this, "Error Fetching Data", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+        }
+        catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadJSON3() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                return;
+            }
+            Client client = new Client();
+            Service apiService = client.getClient().create(Service.class);
+            Call<MoviesResponse> call = apiService.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+
+                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+                    if (swipeContainer.isRefreshing()) {
+                        swipeContainer.setRefreshing(false);
+                    }
+                    pd.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                    Toast.makeText(MainActivity.this, "Error Fetching Data", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+        }
+        catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadJSON4() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                return;
+            }
+            Client client = new Client();
+            Service apiService = client.getClient().create(Service.class);
+            Call<MoviesResponse> call = apiService.getOnTheAirTV(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+
+                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+                    if (swipeContainer.isRefreshing()) {
+                        swipeContainer.setRefreshing(false);
+                    }
+                    pd.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                    Toast.makeText(MainActivity.this, "Error Fetching Data", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+        }
+        catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadJSON5() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                return;
+            }
+            Client client = new Client();
+            Service apiService = client.getClient().create(Service.class);
+            Call<MoviesResponse> call = apiService.getPopularTV(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            call.enqueue(new Callback<MoviesResponse>() {
+                @Override
+                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
+                    List<Movie> movies = null;
+                    if (response.body() != null) {
+                        movies = response.body().getResults();
+                    }
+
+                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                    recyclerView.smoothScrollToPosition(0);
+                    if (swipeContainer.isRefreshing()) {
+                        swipeContainer.setRefreshing(false);
+                    }
+                    pd.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                    Log.d("Error", t.getMessage());
+                    Toast.makeText(MainActivity.this, "Error Fetching Data", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
+        }
+        catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadJSON6() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(getApplicationContext(),"Please obtain API key firstly from themoviedb.org", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+                return;
+            }
+            Client client = new Client();
+            Service apiService = client.getClient().create(Service.class);
+            Call<MoviesResponse> call = apiService.getTopRatedTV(BuildConfig.THE_MOVIE_DB_API_TOKEN);
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
                 public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
@@ -146,9 +354,59 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(LOG_TAG, "Preferences updated");
+        checkSortOrder();
+    }
+    private void checkSortOrder() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortOrder = preferences.getString(
+                this.getString(R.string.pref_sort_order_key),
+                this.getString(R.string.pref_most_popular)
+        );
+        if (sortOrder.equals(this.getString(R.string.pref_upcoming))) {
+            Log.d(LOG_TAG, "Sorting by Upcoming Movies");
+            loadJSON1();
+        }
+        else if(sortOrder.equals(this.getString(R.string.pref_most_popular))){
+            Log.d(LOG_TAG, "Sorting by most Popular Movies");
+            loadJSON2();
+        }
+        else if(sortOrder.equals(this.getString(R.string.pref_highest_rated))){
+            Log.d(LOG_TAG, "Sorting by Top Rated Movies");
+            loadJSON3();
+        }
+        else if(sortOrder.equals(this.getString(R.string.pref_on_the_air))){
+            Log.d(LOG_TAG, "Sorting by On The Air TV Shows");
+            loadJSON4();
+        }
+        else if(sortOrder.equals(this.getString(R.string.pref_tv_popular))){
+            Log.d(LOG_TAG, "Sorting by Popular TV Show");
+            loadJSON5();
+        }
+        else {
+            Log.d(LOG_TAG, "Sorting by Top Rated TV Show");
+            loadJSON6();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (movieList.isEmpty()) {
+            checkSortOrder();
+        }
+        else {
+
         }
     }
 }
