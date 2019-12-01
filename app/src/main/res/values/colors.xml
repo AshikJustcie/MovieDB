@@ -6,4 +6,7 @@
     <color name="viewBg">#F1F5F8</color>
     <color name="movie_title">#4C4C4C</color>
     <color name="whilte">#FFF</color>
+
+    <color name="background">#EFEFEF</color>
+    <color name="placeholder_grey">#AAADC4</color>
 </resources>

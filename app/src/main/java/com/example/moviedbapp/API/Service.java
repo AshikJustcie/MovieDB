@@ -11,25 +11,25 @@ import retrofit2.http.Query;
 
 public interface Service {
     @GET("movie/popular")
-    Call<MoviesResponse> getPopularMovies(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("movie/top_rated")
-    Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("movie/upcoming")
-    Call<MoviesResponse> getUpcomingMovies(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getUpcomingMovies(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("tv/on_the_air")
-    Call<MoviesResponse> getOnTheAirTV(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getOnTheAirTV(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("tv/popular")
-    Call<MoviesResponse> getPopularTV(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getPopularTV(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("tv/top_rated")
-    Call<MoviesResponse> getTopRatedTV(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getTopRatedTV(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("person/popular")
-    Call<MoviesResponse> getPopularCelebrity(@Query("api_key") String apiKey);
+    Call<MoviesResponse> getPopularCelebrity(@Query("api_key") String apiKey, @Query("page") int pageIndex);
 
     @GET("movie/{movie_id}/videos")
     Call<TrailerResponse> getMovieTrailer(@Path("movie_id") int id, @Query("api_key") String apiKey);
